@@ -1,0 +1,7 @@
+node_modules/
+server/data/.admin-token
+.env
+.env.local
+*-service-account*.json
+uploads/*
+!uploads/.gitkeep

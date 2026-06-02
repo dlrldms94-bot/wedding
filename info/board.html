@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="2026 서울 결혼페스타 게시판">
+  <title>게시판 | 2026 서울 결혼페스타</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/header.css">
+  <link rel="stylesheet" href="../css/footer.css">
+</head>
+<body class="sub-page">
+
+  <header class="site-nav" role="banner">
+    <div class="container nav-inner">
+      <a href="../index.html" class="nav-logo"><img src="../img/h-logo1.png" alt="2026 서울 결혼페스타" class="nav-logo-img"></a>
+      <button class="nav-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-menu-wrap">
+        <nav class="nav-menu" role="navigation" aria-label="주요 메뉴">
+          <div class="nav-item has-dropdown">
+            <a href="#" class="nav-link">축제소개
+              <svg class="chevron" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </a>
+            <div class="dropdown">
+              <a href="../intro/overview.html">축제개요</a>
+              <a href="../intro/venue.html">축제장소</a>
+              <a href="../intro/directions.html">오시는길</a>
+            </div>
+          </div>
+          <div class="nav-item has-dropdown">
+            <a href="#" class="nav-link">축제일정
+              <svg class="chevron" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </a>
+            <div class="dropdown">
+              <a href="../schedule/timetable.html">타임테이블</a>
+            </div>
+          </div>
+          <div class="nav-item has-dropdown">
+            <a href="#" class="nav-link">프로그램
+              <svg class="chevron" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </a>
+            <div class="dropdown">
+              <a href="../program/stage.html">무대프로그램</a>
+              <a href="../program/experience.html">체험프로그램</a>
+              <a href="../program/consulting.html">상담프로그램</a>
+              <a href="../program/event.html">이벤트</a>
+            </div>
+          </div>
+          <div class="nav-item has-dropdown">
+            <a href="#" class="nav-link">안내
+              <svg class="chevron" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </a>
+            <div class="dropdown">
+              <a href="board.html">게시판</a>
+              <a href="qna.html">Q&amp;A</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <span class="nav-brand"><img src="../img/h-logo2.png" alt="SEOUL MY SOUL" class="nav-brand-img"></span>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <h1 class="page-title">게시판</h1>
+        <nav class="page-breadcrumb" aria-label="breadcrumb">
+          <a href="../index.html">홈</a>
+          <span aria-hidden="true">&gt;</span>
+          <span>안내</span>
+          <span aria-hidden="true">&gt;</span>
+          <span aria-current="page">게시판</span>
+        </nav>
+      </div>
+    </section>
+
+    <div class="page-body page-body--no-sub-bg">
+      <div class="page-content">
+        <div class="container container--board">
+          <section class="board-wrap">
+            <h2 class="section-heading">공지사항</h2>
+            <div class="board-table-wrap">
+              <table class="data-table board-table">
+                <thead>
+                  <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">날짜</th>
+                  </tr>
+                </thead>
+                <tbody id="board-list"></tbody>
+              </table>
+              <p id="board-empty" class="board-empty" hidden>등록된 게시글이 없습니다.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-main">
+      <div class="footer-title"><img src="../img/f-logo.png" alt="2026 서울 결혼페스타" class="footer-logo-img"></div>
+      <div class="footer-info">
+        <p><strong>주소 :</strong> 서울 강서구 마곡동로 161 서울식물원</p>
+        <p><strong>대표문의 :</strong> shinjw36@onandme.com</p>
+      </div>
+      <div class="footer-logos">
+        <img src="../img/f-logo1.png" alt="2026 서울 결혼페스타" class="footer-emblem footer-emblem-lg">
+        <img src="../img/f-logo2.png" alt="SEOUL MY SOUL" class="footer-emblem">
+      </div>
+    </div>
+    <div class="container footer-sub">
+      <div class="footer-links">
+        <a href="#">개인정보 처리방침</a>
+        <span class="sep">|</span>
+        <a href="#">이메일무단수집거부</a>
+      </div>
+      <p class="footer-copy">&copy;2026 seoulweddingfesta all rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/board.js"></script>
+</body>
+</html>

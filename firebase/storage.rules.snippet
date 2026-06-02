@@ -1,0 +1,7 @@
+// wedding 사이트용 Firebase Storage Rules 조각
+// onandme firebase/storage.rules 에 match /{allPaths=**} 차단 규칙 위에 추가
+
+match /wedding/uploads/{allPaths=**} {
+  allow read: if true;
+  allow write: if false;
+}
