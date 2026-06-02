@@ -39,10 +39,17 @@
 
   function formatBoardDate(value) {
     if (!value) return "";
+
     var text = String(value).slice(0, 10);
     var parts = text.split("-");
-    if (parts.length !== 3) return text;
-    return parts[0] + "." + parts[1] + "." + parts[2];
+
+    if (parts.length !== 3) {
+      parts = String(value).split(".");
+    }
+
+    if (parts.length !== 3) return String(value);
+
+    return Number(parts[0]) + "." + Number(parts[1]) + "." + Number(parts[2]);
   }
 
   function escapeHtml(value) {

@@ -35,10 +35,20 @@ function mapPostRow(row) {
 
 function formatCreatedAt(value) {
   if (!value) return "";
+
+  if (value instanceof Date) {
+    const y = value.getUTCFullYear();
+    const m = String(value.getUTCMonth() + 1).padStart(2, "0");
+    const d = String(value.getUTCDate()).padStart(2, "0");
+    return y + "-" + m + "-" + d;
+  }
+
   const text = String(value).slice(0, 10);
-  const parts = text.split("-");
-  if (parts.length !== 3) return text;
-  return parts.join("-");
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+    return text;
+  }
+
+  return text;
 }
 
 function sortPosts(posts) {
