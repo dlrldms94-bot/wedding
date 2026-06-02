@@ -296,6 +296,10 @@
 
     if (parts.length !== 3) return String(value);
 
-    return Number(parts[0]) + "." + Number(parts[1]) + "." + Number(parts[2]);
+    return parts[0] + "." + padDatePart(parts[1]) + "." + padDatePart(parts[2]);
+  }
+
+  function padDatePart(value) {
+    return String(Number(value)).padStart(2, "0");
   }
 })();
