@@ -45,6 +45,7 @@
     postForm.reset();
     document.getElementById("admin-post-id").value = "";
     document.getElementById("admin-post-date").value = todayString();
+    document.getElementById("admin-post-notice").checked = false;
     document.getElementById("admin-post-submit").textContent = "게시글 등록";
     AdminMediaPicker.setValue("admin-post-image", "");
   }
@@ -72,11 +73,12 @@
         }
 
         postList.innerHTML = posts.map(function (post) {
+          var noticeLabel = post.isNotice ? '<span class="admin-item__badge">공지</span>' : "";
           return (
             '<article class="admin-item">' +
               '<div class="admin-item__head">' +
-                '<strong>' + escapeHtml(post.title) + "</strong>" +
-                '<span class="admin-item__meta">' + escapeHtml(post.createdAt) + "</span>" +
+                "<strong>" + escapeHtml(post.title) + noticeLabel + "</strong>" +
+                '<span class="admin-item__meta">' + escapeHtml(formatAdminDate(post.createdAt)) + "</span>" +
               "</div>" +
               '<p class="admin-item__preview">' + escapeHtml(post.content.slice(0, 80)) + "...</p>" +
               '<div class="admin-item__actions">' +
@@ -163,7 +165,8 @@
       content: document.getElementById("admin-post-content").value,
       imageUrl: document.getElementById("admin-post-image").value,
       youtubeUrl: document.getElementById("admin-post-youtube").value,
-      createdAt: document.getElementById("admin-post-date").value
+      createdAt: document.getElementById("admin-post-date").value,
+      isNotice: document.getElementById("admin-post-notice").checked
     };
 
     var request = editingPostId
@@ -223,6 +226,7 @@
         AdminMediaPicker.setValue("admin-post-image", post.imageUrl || "");
         document.getElementById("admin-post-youtube").value = post.youtubeUrl || "";
         document.getElementById("admin-post-date").value = post.createdAt;
+        document.getElementById("admin-post-notice").checked = Boolean(post.isNotice);
         document.getElementById("admin-post-submit").textContent = "게시글 수정";
       });
     }
@@ -278,5 +282,13 @@
 
   function escapeAttr(value) {
     return escapeHtml(value).replace(/'/g, "&#39;");
+  }
+
+  function formatAdminDate(value) {
+    if (!value) return "";
+    var text = String(value).slice(0, 10);
+    var parts = text.split("-");
+    if (parts.length !== 3) return text;
+    return parts[0] + "." + parts[1] + "." + parts[2];
   }
 })();

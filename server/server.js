@@ -143,7 +143,8 @@ app.post("/api/admin/posts", requireAdmin, handleAsync(async function (req, res)
     content: content,
     imageUrl: String(req.body.imageUrl || "").trim(),
     youtubeUrl: String(req.body.youtubeUrl || "").trim(),
-    createdAt: createdAt
+    createdAt: createdAt,
+    isNotice: Boolean(req.body.isNotice)
   });
 
   res.status(201).json(post);
@@ -163,7 +164,8 @@ app.put("/api/admin/posts/:id", requireAdmin, handleAsync(async function (req, r
     content: content,
     imageUrl: String(req.body.imageUrl || "").trim(),
     youtubeUrl: String(req.body.youtubeUrl || "").trim(),
-    createdAt: createdAt
+    createdAt: createdAt,
+    isNotice: Boolean(req.body.isNotice)
   });
 
   if (!post) {

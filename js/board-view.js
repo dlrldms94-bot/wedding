@@ -19,7 +19,7 @@
   SiteApi.getPost(postId)
     .then(function (post) {
       titleEl.textContent = post.title;
-      if (dateEl) dateEl.textContent = post.createdAt;
+      if (dateEl) dateEl.textContent = formatBoardDate(post.createdAt);
       contentEl.innerHTML = renderPostContent(post);
     })
     .catch(function () {
@@ -97,6 +97,14 @@
     if (match) return match[1];
 
     return null;
+  }
+
+  function formatBoardDate(value) {
+    if (!value) return "";
+    var text = String(value).slice(0, 10);
+    var parts = text.split("-");
+    if (parts.length !== 3) return text;
+    return parts[0] + "." + parts[1] + "." + parts[2];
   }
 
   function escapeHtml(value) {

@@ -1909,6 +1909,26 @@ video {
   transition: color var(--transition);
 }
 
+.board-list__row--notice .board-list__num {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.board-list__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  margin-right: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 12px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
 .board-list__title a:hover {
   color: var(--color-accent);
 }

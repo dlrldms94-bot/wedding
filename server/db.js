@@ -28,7 +28,33 @@ function mapPostRow(row) {
     content: row.content,
     imageUrl: row.image_url || "",
     youtubeUrl: row.youtube_url || "",
-    createdAt: row.created_at
+    createdAt: formatCreatedAt(row.created_at),
+    isNotice: Boolean(row.is_notice)
+  };
+}
+
+function formatCreatedAt(value) {
+  if (!value) return "";
+  const text = String(value).slice(0, 10);
+  const parts = text.split("-");
+  if (parts.length !== 3) return text;
+  return parts.join("-");
+}
+
+function sortPosts(posts) {
+  return posts.slice().sort(function (a, b) {
+    const noticeDiff = Number(Boolean(b.isNotice)) - Number(Boolean(a.isNotice));
+    if (noticeDiff !== 0) return noticeDiff;
+    return String(b.createdAt).localeCompare(String(a.createdAt));
+  });
+}
+
+function mapPostPublic(post) {
+  return {
+    id: post.id,
+    title: post.title,
+    createdAt: post.createdAt,
+    isNotice: Boolean(post.isNotice)
   };
 }
 
@@ -64,8 +90,14 @@ async function initDatabase() {
       content TEXT NOT NULL,
       image_url TEXT NOT NULL DEFAULT '',
       youtube_url TEXT NOT NULL DEFAULT '',
-      created_at DATE NOT NULL
+      created_at DATE NOT NULL,
+      is_notice BOOLEAN NOT NULL DEFAULT FALSE
     )
+  `);
+
+  await pool.query(`
+    ALTER TABLE posts
+    ADD COLUMN IF NOT EXISTS is_notice BOOLEAN NOT NULL DEFAULT FALSE
   `);
 
   await pool.query(`
@@ -93,15 +125,16 @@ async function seedFromJsonFiles() {
 
   for (const post of posts) {
     await pool.query(
-      `INSERT INTO posts (id, title, content, image_url, youtube_url, created_at)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
+      `INSERT INTO posts (id, title, content, image_url, youtube_url, created_at, is_notice)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
       [
         post.id,
         post.title,
         post.content,
         post.imageUrl || "",
         post.youtubeUrl || "",
-        post.createdAt
+        post.createdAt,
+        Boolean(post.isNotice)
       ]
     );
   }
@@ -138,19 +171,14 @@ function isUsingJson() {
 
 async function listPostsPublic() {
   if (useJson) {
-    const posts = readSeed(POSTS_SEED).sort(function (a, b) {
-      return String(b.createdAt).localeCompare(String(a.createdAt));
-    });
-    return posts.map(function (post) {
-      return { id: post.id, title: post.title, createdAt: post.createdAt };
-    });
+    return sortPosts(readSeed(POSTS_SEED)).map(mapPostPublic);
   }
 
   const result = await pool.query(
-    "SELECT id, title, created_at FROM posts ORDER BY created_at DESC, id DESC"
+    "SELECT id, title, created_at, is_notice FROM posts ORDER BY is_notice DESC, created_at DESC, id DESC"
   );
   return result.rows.map(function (row) {
-    return { id: row.id, title: row.title, createdAt: row.created_at };
+    return mapPostPublic(mapPostRow(row));
   });
 }
 
@@ -167,12 +195,12 @@ async function getPost(id) {
 
 async function listPostsAdmin() {
   if (useJson) {
-    return readSeed(POSTS_SEED).sort(function (a, b) {
-      return String(b.createdAt).localeCompare(String(a.createdAt));
-    });
+    return sortPosts(readSeed(POSTS_SEED));
   }
 
-  const result = await pool.query("SELECT * FROM posts ORDER BY created_at DESC, id DESC");
+  const result = await pool.query(
+    "SELECT * FROM posts ORDER BY is_notice DESC, created_at DESC, id DESC"
+  );
   return result.rows.map(mapPostRow);
 }
 
@@ -185,7 +213,8 @@ async function createPost(data) {
       content: data.content,
       imageUrl: data.imageUrl,
       youtubeUrl: data.youtubeUrl,
-      createdAt: data.createdAt
+      createdAt: data.createdAt,
+      isNotice: Boolean(data.isNotice)
     };
     posts.unshift(post);
     writeJsonSeed(POSTS_SEED, posts);
@@ -193,10 +222,10 @@ async function createPost(data) {
   }
 
   const result = await pool.query(
-    `INSERT INTO posts (title, content, image_url, youtube_url, created_at)
-     VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO posts (title, content, image_url, youtube_url, created_at, is_notice)
+     VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING *`,
-    [data.title, data.content, data.imageUrl, data.youtubeUrl, data.createdAt]
+    [data.title, data.content, data.imageUrl, data.youtubeUrl, data.createdAt, Boolean(data.isNotice)]
   );
   return mapPostRow(result.rows[0]);
 }
@@ -214,7 +243,8 @@ async function updatePost(id, data) {
       content: data.content,
       imageUrl: data.imageUrl,
       youtubeUrl: data.youtubeUrl,
-      createdAt: data.createdAt
+      createdAt: data.createdAt,
+      isNotice: Boolean(data.isNotice)
     };
     writeJsonSeed(POSTS_SEED, posts);
     return posts[index];
@@ -222,10 +252,10 @@ async function updatePost(id, data) {
 
   const result = await pool.query(
     `UPDATE posts
-     SET title = $2, content = $3, image_url = $4, youtube_url = $5, created_at = $6
+     SET title = $2, content = $3, image_url = $4, youtube_url = $5, created_at = $6, is_notice = $7
      WHERE id = $1
      RETURNING *`,
-    [id, data.title, data.content, data.imageUrl, data.youtubeUrl, data.createdAt]
+    [id, data.title, data.content, data.imageUrl, data.youtubeUrl, data.createdAt, Boolean(data.isNotice)]
   );
   return result.rows[0] ? mapPostRow(result.rows[0]) : null;
 }
