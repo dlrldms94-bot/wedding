@@ -9,9 +9,32 @@
   var closeBtn = document.getElementById("site-popup-close");
   var hideTodayBtn = document.getElementById("site-popup-hide-today");
 
+  var FALLBACK_POPUP = {
+    id: 1,
+    imageUrl: "img/event1.jpg",
+    linkUrl: "intro/overview.html"
+  };
+
+  function unlockPageScroll() {
+    if (overlay.hidden) {
+      document.body.classList.remove("has-popup");
+      document.body.style.overflow = "";
+    }
+  }
+
+  function resolveAssetUrl(url) {
+    if (!url) return "";
+    if (/^https?:\/\//i.test(url)) return url;
+    if (url.charAt(0) === "/" && window.location.protocol === "file:") {
+      return url.slice(1);
+    }
+    return url;
+  }
+
   function hidePopup() {
     overlay.hidden = true;
     document.body.classList.remove("has-popup");
+    document.body.style.overflow = "";
   }
 
   function storageKey(popupId) {
@@ -27,10 +50,17 @@
     return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
   }
 
+  function tryShow(popup) {
+    if (!popup || !popup.imageUrl || isHiddenToday(popup.id)) return false;
+    overlay.setAttribute("data-popup-id", popup.id);
+    showPopup(popup);
+    return true;
+  }
+
   function showPopup(popup) {
     if (!popup.imageUrl) return;
 
-    imageEl.src = popup.imageUrl;
+    imageEl.src = resolveAssetUrl(popup.imageUrl);
     imageEl.alt = "팝업";
 
     if (popup.linkUrl) {
@@ -45,6 +75,7 @@
 
     overlay.hidden = false;
     document.body.classList.add("has-popup");
+    document.body.style.overflow = "hidden";
   }
 
   closeBtn.addEventListener("click", hidePopup);
@@ -66,13 +97,14 @@
     hidePopup();
   });
 
+  unlockPageScroll();
+
   SiteApi.getActivePopup()
     .then(function (popup) {
-      if (!popup || !popup.imageUrl || isHiddenToday(popup.id)) return;
-      overlay.setAttribute("data-popup-id", popup.id);
-      showPopup(popup);
+      if (tryShow(popup)) return;
+      tryShow(FALLBACK_POPUP);
     })
     .catch(function () {
-      /* no popup */
+      tryShow(FALLBACK_POPUP);
     });
 })();

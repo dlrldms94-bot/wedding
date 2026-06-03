@@ -1,6 +1,16 @@
 (function () {
   "use strict";
 
+  function unlockPageScroll() {
+    var menuOpen = document.querySelector(".nav-menu-wrap.is-open");
+    var popupOpen = document.body.classList.contains("has-popup");
+    if (!menuOpen && !popupOpen) {
+      document.body.style.overflow = "";
+    }
+  }
+
+  unlockPageScroll();
+
   var nav = document.querySelector(".site-nav");
   var toggle = document.querySelector(".nav-toggle");
   var menuWrap = document.querySelector(".nav-menu-wrap");
@@ -25,7 +35,9 @@
     toggle.classList.remove("is-active");
     toggle.setAttribute("aria-expanded", "false");
     menuWrap.classList.remove("is-open");
-    document.body.style.overflow = "";
+    if (!document.body.classList.contains("has-popup")) {
+      document.body.style.overflow = "";
+    }
     navItems.forEach(function (item) {
       item.classList.remove("is-open");
     });

@@ -51,8 +51,10 @@
   object-fit: contain;
 }
 
-.footer-emblem-lg {
-  height: var(--logo-festa-height);
+.footer-emblem-festa {
+  height: var(--footer-emblem-festa-height);
+  width: auto;
+  object-fit: contain;
 }
 
 .footer-brand-text {
@@ -87,20 +89,14 @@
 
 @media (max-width: 1024px) {
   .footer-main {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .footer-logos {
-    grid-column: 1 / -1;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 768px) {
-  .footer-main {
     grid-template-columns: 1fr;
     text-align: center;
     gap: 24px;
+    padding: 32px 0;
+  }
+
+  .footer-title {
+    justify-content: center;
   }
 
   .footer-logos {
@@ -114,8 +110,25 @@
 }
 
 @media (max-width: 480px) {
-  .footer-logo-img,
-  .footer-emblem-lg {
+  .footer-main {
+    padding: 28px 0;
+    gap: 20px;
+  }
+
+  .footer-info {
+    font-size: 0.85rem;
+  }
+
+  .footer-sub {
+    font-size: 0.78rem;
+    padding: 14px 0 20px;
+  }
+
+  .footer-logo-img {
     height: var(--logo-festa-height-sm);
+  }
+
+  .footer-emblem-festa {
+    height: var(--footer-emblem-festa-height-sm);
   }
 }

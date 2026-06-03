@@ -403,7 +403,55 @@ body.admin-media-open {
 }
 
 @media (max-width: 600px) {
+  .admin-shell {
+    width: min(calc(100% - 24px), 1180px);
+    padding: 32px 0 48px;
+  }
+
+  .admin-card {
+    padding: 20px 16px;
+  }
+
+  .admin-top__title {
+    font-size: 1.5rem;
+  }
+
+  .admin-tabs {
+    flex-wrap: wrap;
+  }
+
+  .admin-tabs__btn {
+    flex: 1 1 auto;
+    min-width: calc(50% - 6px);
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
   .admin-field-row {
     grid-template-columns: 1fr;
+  }
+
+  .admin-item__head {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .admin-item__actions {
+    flex-wrap: wrap;
+  }
+
+  .admin-form__actions .admin-btn {
+    flex: 1 1 100%;
+  }
+
+  .admin-media-modal__panel {
+    width: 100%;
+    max-height: calc(100dvh - 40px);
+    max-height: calc(100vh - 40px);
+  }
+
+  .admin-media-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
 }

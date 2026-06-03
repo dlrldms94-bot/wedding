@@ -72,13 +72,7 @@
   font-size: 0.95rem;
   font-weight: 500;
   border-radius: var(--radius-md);
-  transition: background var(--transition), color var(--transition);
-}
-
-.nav-link:hover,
-.nav-item.is-open > .nav-link,
-.nav-item:focus-within > .nav-link {
-  background: rgba(255, 255, 255, 0.12);
+  transition: color var(--transition);
 }
 
 .nav-link .chevron {
@@ -205,6 +199,7 @@
   }
 
   .nav-menu-wrap {
+    display: none;
     position: fixed;
     top: var(--nav-height);
     left: 0;
@@ -215,13 +210,12 @@
     -webkit-backdrop-filter: blur(16px);
     padding: 16px 20px 40px;
     overflow-y: auto;
-    transform: translateX(100%);
-    transition: transform var(--transition-dropdown);
+    -webkit-overflow-scrolling: touch;
     color: var(--color-primary);
   }
 
   .nav-menu-wrap.is-open {
-    transform: translateX(0);
+    display: block;
   }
 
   .nav-menu {
@@ -237,6 +231,11 @@
   .nav-link {
     justify-content: space-between;
     padding: 14px 8px;
+    color: var(--color-primary);
+  }
+
+  .nav-link .chevron {
+    color: var(--color-primary);
   }
 
   .nav-brand {
@@ -245,6 +244,9 @@
 
   .dropdown {
     position: static;
+    top: auto;
+    left: auto;
+    min-width: 0;
     transform: none;
     opacity: 1;
     visibility: visible;
@@ -258,14 +260,36 @@
     transition: max-height var(--transition-dropdown);
   }
 
+  /* 데스크톱 transform(translateX -50%)가 모바일에서도 적용되며 overflow로 글자가 잘림 */
+  .nav-item:hover .dropdown,
+  .nav-item:focus-within .dropdown,
+  .nav-item.is-open .dropdown {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
   .nav-item.is-open .dropdown {
     max-height: 300px;
   }
 
-  .dropdown a {
+  .nav-menu-wrap .dropdown a {
+    display: block;
     padding: 10px 8px;
-    font-size: 0.88rem;
-    opacity: 0.85;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--color-primary);
+    opacity: 1;
+    -webkit-text-fill-color: var(--color-primary);
+  }
+
+  .nav-menu-wrap .dropdown a:hover,
+  .nav-menu-wrap .dropdown a:focus-visible {
+    color: var(--color-primary);
+    -webkit-text-fill-color: var(--color-primary);
+    background: rgba(10, 56, 98, 0.06);
   }
 }
 
