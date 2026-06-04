@@ -2294,6 +2294,21 @@ body.has-popup {
   pointer-events: none;
 }
 
+.site-popup__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  max-width: var(--popup-max-width);
+  pointer-events: none;
+}
+
+.site-popup__stage > .site-popup__box {
+  pointer-events: auto;
+}
+
 .site-popup__box {
   position: relative;
   width: min(100%, var(--popup-max-width));
@@ -2302,6 +2317,45 @@ body.has-popup {
   border-radius: var(--radius-lg);
   background: var(--color-white);
   box-shadow: var(--shadow-soft);
+}
+
+/* PC — 팝업 좌·우 배치 (겹침 없음) */
+@media (min-width: 1025px) {
+  .site-popup {
+    padding: 32px 40px;
+  }
+
+  .site-popup__stage {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    max-width: min(1200px, calc(100% - 80px));
+  }
+
+  .site-popup__stage--single {
+    justify-content: center;
+  }
+
+  .site-popup__stage--single .site-popup__box {
+    flex: 0 1 var(--popup-max-width);
+  }
+
+  .site-popup__stage--dual .site-popup__box {
+    flex: 0 1 var(--popup-max-width);
+    max-width: min(400px, calc(50vw - 56px));
+  }
+
+  .site-popup__stage--multi {
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .site-popup__stage--multi .site-popup__box {
+    flex: 0 1 min(340px, calc((100% - 48px) / 3));
+    max-width: min(400px, 32vw);
+  }
 }
 
 .site-popup__close {
@@ -2358,11 +2412,15 @@ body.has-popup {
   text-decoration: underline;
 }
 
-/* 메인 팝업 — 태블릿·모바일 */
+/* 메인 팝업 — 태블릿·모바일 (순차 1개) */
 @media (max-width: 1024px) {
   .site-popup {
     --popup-max-width: min(400px, 88vw);
     padding: max(20px, env(safe-area-inset-top, 0px)) 20px max(20px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .site-popup__stage {
+    max-width: var(--popup-max-width);
   }
 }
 

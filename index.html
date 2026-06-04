@@ -168,17 +168,7 @@
   </footer>
 
   <div id="site-popup" class="site-popup" hidden>
-    <div class="site-popup__box" role="dialog" aria-modal="true" aria-label="팝업">
-      <button type="button" id="site-popup-close" class="site-popup__close" aria-label="팝업 닫기">&times;</button>
-      <div id="site-popup-image-wrap" class="site-popup__image-wrap">
-        <a id="site-popup-image-link" class="site-popup__image-link" href="#">
-          <img id="site-popup-image" src="" alt="팝업">
-        </a>
-      </div>
-      <div class="site-popup__footer">
-        <button type="button" id="site-popup-hide-today" class="site-popup__hide-today">오늘 하루 보지 않기</button>
-      </div>
-    </div>
+    <div id="site-popup-stage" class="site-popup__stage" aria-live="polite"></div>
   </div>
 
   <script src="js/main.js"></script>
