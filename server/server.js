@@ -184,8 +184,8 @@ app.delete("/api/admin/posts/:id", requireAdmin, handleAsync(async function (req
 }));
 
 app.get("/api/popups/active", handleAsync(async function (req, res) {
-  const popup = await db.getActivePopup(formatDate(new Date()));
-  res.json(popup || null);
+  const popups = await db.getActivePopups(formatDate(new Date()));
+  res.json(popups);
 }));
 
 app.get("/api/admin/popups", requireAdmin, handleAsync(async function (req, res) {

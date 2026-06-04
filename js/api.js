@@ -35,8 +35,10 @@
       return this.request("/api/posts/" + encodeURIComponent(id));
     },
 
-    getActivePopup: function () {
-      return this.request("/api/popups/active");
+    getActivePopups: function () {
+      return this.request("/api/popups/active").then(function (data) {
+        return Array.isArray(data) ? data : data ? [data] : [];
+      });
     },
 
     adminRequest: function (path, options) {

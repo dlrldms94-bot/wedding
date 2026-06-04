@@ -285,14 +285,22 @@ async function deletePost(id) {
   return result.rowCount > 0;
 }
 
-async function getActivePopup(today) {
+function isPopupActiveOnDate(popup, today) {
+  if (!popup.active || !popup.imageUrl) return false;
+  if (popup.startDate && today < popup.startDate) return false;
+  if (popup.endDate && today > popup.endDate) return false;
+  return true;
+}
+
+async function getActivePopups(today) {
   if (useJson) {
-    return readSeed(POPUPS_SEED).find(function (popup) {
-      if (!popup.active || !popup.imageUrl) return false;
-      if (popup.startDate && today < popup.startDate) return false;
-      if (popup.endDate && today > popup.endDate) return false;
-      return true;
-    }) || null;
+    return readSeed(POPUPS_SEED)
+      .filter(function (popup) {
+        return isPopupActiveOnDate(popup, today);
+      })
+      .sort(function (a, b) {
+        return Number(a.id) - Number(b.id);
+      });
   }
 
   const result = await pool.query(
@@ -301,11 +309,15 @@ async function getActivePopup(today) {
        AND image_url <> ''
        AND (start_date IS NULL OR start_date <= $1)
        AND (end_date IS NULL OR end_date >= $1)
-     ORDER BY id DESC
-     LIMIT 1`,
+     ORDER BY id ASC`,
     [today]
   );
-  return result.rows[0] ? mapPopupRow(result.rows[0]) : null;
+  return result.rows.map(mapPopupRow);
+}
+
+async function getActivePopup(today) {
+  const popups = await getActivePopups(today);
+  return popups[0] || null;
 }
 
 async function listPopupsAdmin() {
@@ -417,6 +429,7 @@ module.exports = {
   updatePost,
   deletePost,
   getActivePopup,
+  getActivePopups,
   listPopupsAdmin,
   createPopup,
   updatePopup,
