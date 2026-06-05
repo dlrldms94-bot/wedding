@@ -14,6 +14,7 @@
   var popupList = document.getElementById("admin-popup-list");
   var postResetBtn = document.getElementById("admin-post-reset");
   var popupResetBtn = document.getElementById("admin-popup-reset");
+  var insertTableBtn = document.getElementById("admin-insert-table");
 
   var editingPostId = null;
   var editingPopupId = null;
@@ -212,6 +213,28 @@
 
   postResetBtn.addEventListener("click", resetPostForm);
   popupResetBtn.addEventListener("click", resetPopupForm);
+
+  if (insertTableBtn) {
+    insertTableBtn.addEventListener("click", function () {
+      var textarea = document.getElementById("admin-post-content");
+      if (!textarea || !window.BoardContent) return;
+      insertTextAtCursor(textarea, BoardContent.getTableTemplate());
+    });
+  }
+
+  function insertTextAtCursor(textarea, text) {
+    var start = textarea.selectionStart;
+    var end = textarea.selectionEnd;
+    var value = textarea.value;
+    var before = value.slice(0, start);
+    var after = value.slice(end);
+    var prefix = before.length && !/\n$/.test(before) ? "\n" : "";
+    var insert = prefix + text;
+    textarea.value = before + insert + after;
+    textarea.focus();
+    var pos = before.length + insert.length;
+    textarea.setSelectionRange(pos, pos);
+  }
 
   postList.addEventListener("click", function (event) {
     var editId = event.target.getAttribute("data-edit-post");

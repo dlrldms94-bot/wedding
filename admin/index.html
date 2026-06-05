@@ -53,7 +53,13 @@
               </label>
               <label class="admin-field">
                 <span>내용</span>
-                <textarea id="admin-post-content" rows="8" required></textarea>
+                <div class="admin-editor">
+                  <div class="admin-editor__toolbar">
+                    <button type="button" id="admin-insert-table" class="admin-btn admin-btn--ghost admin-btn--sm">표 삽입</button>
+                  </div>
+                  <textarea id="admin-post-content" rows="10" required></textarea>
+                </div>
+                <p class="admin-field__hint">본문 URL(http://, https://, www.)은 자동 링크됩니다. 표는 <code>| 업체명 | 전화번호 | 홈페이지 |</code> 형식이며, 두 번째 줄 <code>| --- | --- | --- |</code> 다음에 데이터 행을 추가하세요. 홈페이지 칸에 URL을 넣으면 밑줄 링크로 표시됩니다.</p>
               </label>
               <label class="admin-field">
                 <span>이미지</span>
@@ -159,6 +165,7 @@
   </div>
 
   <script src="../js/api.js"></script>
+  <script src="../js/board-content.js"></script>
   <script src="../js/media-picker.js"></script>
   <script src="../js/admin.js"></script>
 </body>

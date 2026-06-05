@@ -101,6 +101,48 @@
   color: var(--color-primary);
 }
 
+.admin-field__hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.admin-field__hint code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.05);
+  font-size: 11px;
+}
+
+.admin-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-editor__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-editor textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-footer-border);
+  border-radius: var(--radius-md);
+  font: inherit;
+  color: var(--color-primary);
+  resize: vertical;
+}
+
+.admin-btn--sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
 .admin-check {
   display: inline-flex;
   align-items: center;
