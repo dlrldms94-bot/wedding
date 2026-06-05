@@ -22,14 +22,27 @@
   function showDashboard() {
     loginSection.hidden = true;
     dashboardSection.hidden = false;
+    if (loginError) loginError.hidden = true;
     loadPosts();
     loadPopups();
   }
 
-  function showLogin() {
+  function showLogin(message) {
     loginSection.hidden = false;
     dashboardSection.hidden = true;
     sessionStorage.removeItem("adminToken");
+    if (loginError) {
+      loginError.hidden = !message;
+      loginError.textContent = message || "";
+    }
+  }
+
+  function handleAdminError(error) {
+    if (error && error.status === 401) {
+      showLogin(error.message || "세션이 만료되었습니다. 다시 로그인해 주세요.");
+      return true;
+    }
+    return false;
   }
 
   function switchTab(name) {
@@ -66,22 +79,28 @@
   }
 
   function loadPosts() {
+    postList.innerHTML = '<p class="admin-empty">게시글 목록을 불러오는 중...</p>';
+
     SiteApi.adminRequest("/api/admin/posts")
       .then(function (posts) {
-        if (!posts.length) {
+        if (!Array.isArray(posts) || !posts.length) {
           postList.innerHTML = '<p class="admin-empty">등록된 게시글이 없습니다.</p>';
           return;
         }
 
         postList.innerHTML = posts.map(function (post) {
           var noticeLabel = post.isNotice ? '<span class="admin-item__badge">공지</span>' : "";
+          var preview = String(post.content || "").replace(/\s+/g, " ").trim();
+          if (preview.length > 80) {
+            preview = preview.slice(0, 80) + "...";
+          }
           return (
             '<article class="admin-item">' +
               '<div class="admin-item__head">' +
-                "<strong>" + escapeHtml(post.title) + noticeLabel + "</strong>" +
+                "<strong>" + escapeHtml(post.title || "") + noticeLabel + "</strong>" +
                 '<span class="admin-item__meta">' + escapeHtml(formatAdminDate(post.createdAt)) + "</span>" +
               "</div>" +
-              '<p class="admin-item__preview">' + escapeHtml(post.content.slice(0, 80)) + "...</p>" +
+              '<p class="admin-item__preview">' + escapeHtml(preview || "내용 없음") + "</p>" +
               '<div class="admin-item__actions">' +
                 '<button type="button" class="admin-btn admin-btn--ghost" data-edit-post="' + post.id + '">수정</button>' +
                 '<button type="button" class="admin-btn admin-btn--danger" data-delete-post="' + post.id + '">삭제</button>' +
@@ -90,15 +109,19 @@
           );
         }).join("");
       })
-      .catch(function () {
-        postList.innerHTML = '<p class="admin-empty">게시글 목록을 불러오지 못했습니다.</p>';
+      .catch(function (error) {
+        if (!handleAdminError(error)) {
+          postList.innerHTML = '<p class="admin-empty">게시글 목록을 불러오지 못했습니다.</p>';
+        }
       });
   }
 
   function loadPopups() {
+    popupList.innerHTML = '<p class="admin-empty">팝업 목록을 불러오는 중...</p>';
+
     SiteApi.adminRequest("/api/admin/popups")
       .then(function (popups) {
-        if (!popups.length) {
+        if (!Array.isArray(popups) || !popups.length) {
           popupList.innerHTML = '<p class="admin-empty">등록된 팝업이 없습니다.</p>';
           return;
         }
@@ -125,8 +148,10 @@
           );
         }).join("");
       })
-      .catch(function () {
-        popupList.innerHTML = '<p class="admin-empty">팝업 목록을 불러오지 못했습니다.</p>';
+      .catch(function (error) {
+        if (!handleAdminError(error)) {
+          popupList.innerHTML = '<p class="admin-empty">팝업 목록을 불러오지 못했습니다.</p>';
+        }
       });
   }
 
@@ -218,7 +243,7 @@
     insertTableBtn.addEventListener("click", function () {
       var textarea = document.getElementById("admin-post-content");
       if (!textarea || !window.BoardContent) return;
-      insertTextAtCursor(textarea, BoardContent.getTableTemplate());
+      insertTextAtCursor(textarea, window.BoardContent.getTableTemplate());
     });
   }
 
@@ -286,11 +311,24 @@
     }
   });
 
-  if (sessionStorage.getItem("adminToken")) {
-    showDashboard();
-  } else {
-    showLogin();
+  function tryRestoreSession() {
+    if (!sessionStorage.getItem("adminToken")) {
+      showLogin();
+      return;
+    }
+
+    SiteApi.adminRequest("/api/admin/posts")
+      .then(function () {
+        showDashboard();
+      })
+      .catch(function (error) {
+        if (!handleAdminError(error)) {
+          showLogin();
+        }
+      });
   }
+
+  tryRestoreSession();
 
   resetPostForm();
   resetPopupForm();

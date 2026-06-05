@@ -10,8 +10,7 @@ const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, "..");
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "wedding2026";
 const SESSION_MS = 8 * 60 * 60 * 1000;
-
-const sessions = new Map();
+const TOKEN_PREFIX = "v1.";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -35,18 +34,62 @@ function formatDate(date) {
   return y + "-" + m + "-" + d;
 }
 
+function createAdminToken() {
+  const expiresAt = Date.now() + SESSION_MS;
+  const payload = Buffer.from(JSON.stringify({ exp: expiresAt }), "utf8").toString("base64url");
+  const signature = crypto
+    .createHmac("sha256", ADMIN_PASSWORD)
+    .update(payload)
+    .digest("base64url");
+
+  return TOKEN_PREFIX + payload + "." + signature;
+}
+
+function verifyAdminToken(token) {
+  if (!token || typeof token !== "string" || token.indexOf(TOKEN_PREFIX) !== 0) {
+    return null;
+  }
+
+  const body = token.slice(TOKEN_PREFIX.length);
+  const dotIndex = body.lastIndexOf(".");
+
+  if (dotIndex <= 0) {
+    return null;
+  }
+
+  const payload = body.slice(0, dotIndex);
+  const signature = body.slice(dotIndex + 1);
+  const expected = crypto
+    .createHmac("sha256", ADMIN_PASSWORD)
+    .update(payload)
+    .digest("base64url");
+
+  if (signature.length !== expected.length) {
+    return null;
+  }
+
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    return null;
+  }
+
+  try {
+    const data = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    if (!data.exp || Date.now() > data.exp) {
+      return null;
+    }
+    return data;
+  } catch (error) {
+    return null;
+  }
+}
+
 function requireAdmin(req, res, next) {
   const header = req.headers.authorization || "";
   const token = header.indexOf("Bearer ") === 0 ? header.slice(7) : "";
+  const session = verifyAdminToken(token);
 
-  if (!token || !sessions.has(token)) {
-    return res.status(401).json({ message: "관리자 인증이 필요합니다." });
-  }
-
-  const session = sessions.get(token);
-  if (Date.now() > session.expiresAt) {
-    sessions.delete(token);
-    return res.status(401).json({ message: "세션이 만료되었습니다." });
+  if (!session) {
+    return res.status(401).json({ message: "관리자 인증이 필요합니다. 다시 로그인해 주세요." });
   }
 
   req.adminToken = token;
@@ -78,17 +121,16 @@ app.post("/api/admin/login", function (req, res) {
     return res.status(401).json({ message: "비밀번호가 올바르지 않습니다." });
   }
 
-  const token = crypto.randomBytes(24).toString("hex");
-  sessions.set(token, { expiresAt: Date.now() + SESSION_MS });
+  const expiresAt = Date.now() + SESSION_MS;
+  const token = createAdminToken();
 
   res.json({
     token: token,
-    expiresAt: sessions.get(token).expiresAt
+    expiresAt: expiresAt
   });
 });
 
 app.post("/api/admin/logout", requireAdmin, function (req, res) {
-  sessions.delete(req.adminToken);
   res.json({ ok: true });
 });
 
