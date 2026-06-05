@@ -113,7 +113,22 @@
 
     if (!parsed.length) return "";
 
-    var html = '<div class="board-view__table-wrap"><table class="board-view__table">';
+    var colCount = parsed[0].length;
+    var tableClass = "board-view__table";
+    var colgroup = "";
+
+    if (colCount === 3) {
+      tableClass += " board-view__table--vendor";
+      colgroup =
+        "<colgroup>" +
+          '<col class="board-view__col-name">' +
+          '<col class="board-view__col-phone">' +
+          '<col class="board-view__col-url">' +
+        "</colgroup>";
+    }
+
+    var html =
+      '<div class="board-view__table-wrap"><table class="' + tableClass + '">' + colgroup;
     var bodyStart = 0;
 
     if (!isTableSeparatorRow(parsed[0])) {

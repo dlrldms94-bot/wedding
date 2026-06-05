@@ -9,7 +9,7 @@
 .footer-main {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
-  align-items: center;
+  align-items: flex-start;
   gap: 32px;
   padding: 40px 0;
 }

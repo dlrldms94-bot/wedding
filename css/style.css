@@ -2259,6 +2259,23 @@ video {
   color: #000;
 }
 
+.board-view__table--vendor col.board-view__col-name {
+  width: 30%;
+}
+
+.board-view__table--vendor col.board-view__col-phone {
+  width: 20%;
+}
+
+.board-view__table--vendor col.board-view__col-url {
+  width: 50%;
+}
+
+.board-view__table--vendor th:nth-child(2),
+.board-view__table--vendor td:nth-child(2) {
+  white-space: nowrap;
+}
+
 .board-view__table .board-view__link {
   color: inherit;
   text-decoration: underline;
@@ -2556,6 +2573,23 @@ body.has-popup {
   .board-view__table th,
   .board-view__table td {
     padding: 8px 6px;
+  }
+
+  .board-view__table--vendor col.board-view__col-name {
+    width: 30%;
+  }
+
+  .board-view__table--vendor col.board-view__col-phone {
+    width: 20%;
+  }
+
+  .board-view__table--vendor col.board-view__col-url {
+    width: 50%;
+  }
+
+  .board-view__table--vendor th:nth-child(2),
+  .board-view__table--vendor td:nth-child(2) {
+    white-space: normal;
   }
 
   .data-table th,
